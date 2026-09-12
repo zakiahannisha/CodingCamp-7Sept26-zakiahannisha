@@ -942,3 +942,253 @@ function initTodoList() {
     });
   }
 }
+
+/* =============================================================
+   SECTION 8 — QUICK LINKS WIDGET
+   ============================================================= */
+
+/**
+ * renderQuickLinks() — replaces #quicklinks-list innerHTML with the
+ * current state.links array.
+ *
+ * Empty state: a single <li class="empty-state"> with a message.
+ * Non-empty: one <li class="link-item"> per link containing:
+ *   - <button class="link-button" data-id="…">label</button>
+ *   - <button class="btn-delete-link" data-id="…">Delete</button>
+ *
+ * Requirements: 10.2, 10.4, 10.5, 12.4
+ */
+function renderQuickLinks() {
+  var listEl = document.getElementById("quicklinks-list");
+  if (!listEl) return;
+
+  if (state.links.length === 0) {
+    listEl.innerHTML =
+      '<li class="empty-state">No quick links saved yet.</li>';
+    return;
+  }
+
+  var html = "";
+  for (var i = 0; i < state.links.length; i++) {
+    var link = state.links[i];
+
+    // Escape label for safe insertion into HTML attribute and text content
+    var escapedLabel = link.label
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+
+    html +=
+      '<li class="link-item">' +
+        '<button class="link-button" data-id="' + link.id + '"' +
+          ' aria-label="Open ' + escapedLabel + '">' +
+          escapedLabel +
+        '</button>' +
+        '<button class="btn-delete-link" data-id="' + link.id + '"' +
+          ' aria-label="Delete link ' + escapedLabel + '">Delete</button>' +
+      '</li>';
+  }
+
+  listEl.innerHTML = html;
+}
+
+/**
+ * openLink(id) — finds the link in state.links by id, validates the URL,
+ * and opens it in a new tab.
+ *
+ * If the URL is invalid (not http:// or https://), shows an inline error
+ * on #quicklinks-error and does NOT open a new tab.
+ *
+ * Requirements: 10.3, 10.6
+ *
+ * @param {string} id
+ */
+function openLink(id) {
+  var link = null;
+  for (var i = 0; i < state.links.length; i++) {
+    if (state.links[i].id === id) {
+      link = state.links[i];
+      break;
+    }
+  }
+  if (!link) return;
+
+  if (!isValidURL(link.url)) {
+    showError("quicklinks-error", "Invalid link: URL must start with http:// or https://");
+    return;
+  }
+
+  window.open(link.url, "_blank");
+}
+
+/**
+ * addLink(label, url) — validates inputs, creates a Link, persists it,
+ * and re-renders.
+ *
+ * Validation failure: shows field-specific error, returns without creating.
+ * Storage failure (Req 11.6): rolls back the link from state.links, shows
+ * error on #quicklinks-error, and restores both input fields to the
+ * supplied label and url values.
+ *
+ * Requirements: 11.2, 11.3, 11.4, 11.5, 11.6
+ *
+ * @param {string} label - Raw value from #link-label-input
+ * @param {string} url   - Raw value from #link-url-input
+ */
+function addLink(label, url) {
+  // Validate — isValidLinkInput covers empty label, empty URL, and invalid URL
+  if (!isValidLinkInput(label, url)) {
+    // Give a specific error message depending on which field is the problem
+    if (!label || typeof label !== "string" || label.trim().length === 0) {
+      showError("quicklinks-error", "Please enter a label.");
+    } else if (!url || typeof url !== "string" || url.trim().length === 0) {
+      showError("quicklinks-error", "Please enter a URL.");
+    } else {
+      showError("quicklinks-error", 'URL must start with "http://" or "https://".');
+    }
+    return;
+  }
+
+  clearError("quicklinks-error");
+
+  var link = {
+    id:    String(Date.now() + Math.random()),
+    label: label.trim(),
+    url:   url.trim()
+  };
+
+  state.links.push(link);
+
+  // Clear input fields immediately (optimistic)
+  var labelInput = document.getElementById("link-label-input");
+  var urlInput   = document.getElementById("link-url-input");
+  if (labelInput) labelInput.value = "";
+  if (urlInput)   urlInput.value   = "";
+
+  // Persist; rollback on failure (Req 11.6)
+  try {
+    saveLinks(state.links);
+  } catch (e) {
+    // Rollback: remove the link that was just pushed
+    state.links = state.links.filter(function (l) { return l.id !== link.id; });
+    // Restore input field values
+    if (labelInput) labelInput.value = label;
+    if (urlInput)   urlInput.value   = url;
+    showError("quicklinks-error", "Link could not be saved.");
+    renderQuickLinks();
+    return;
+  }
+
+  renderQuickLinks();
+}
+
+/**
+ * deleteLink(id) — removes a link from state.links, persists, and re-renders.
+ *
+ * Saves the link and its original index before removal so it can be
+ * rolled back on storage failure.
+ *
+ * Storage failure (Req 12.5): re-inserts the link at its original index,
+ * shows #quicklinks-error, and re-renders.
+ *
+ * Requirements: 12.1, 12.2, 12.3, 12.4, 12.5
+ *
+ * @param {string} id
+ */
+function deleteLink(id) {
+  // Capture the link and its position for potential rollback
+  var originalIndex = -1;
+  var removedLink   = null;
+  for (var i = 0; i < state.links.length; i++) {
+    if (state.links[i].id === id) {
+      originalIndex = i;
+      removedLink   = state.links[i];
+      break;
+    }
+  }
+  if (originalIndex === -1) return; // Link not found; nothing to do
+
+  // Remove from state
+  state.links.splice(originalIndex, 1);
+
+  try {
+    saveLinks(state.links);
+  } catch (e) {
+    // Rollback: re-insert at original position
+    state.links.splice(originalIndex, 0, removedLink);
+    showError("quicklinks-error", "Deletion could not be saved.");
+    renderQuickLinks();
+    return;
+  }
+
+  renderQuickLinks();
+}
+
+/**
+ * initQuickLinks() — sets up event delegation on #quicklinks-list and
+ * wires the #btn-add-link button, then renders the initial state.
+ *
+ * Delegated events on #quicklinks-list:
+ *   click .link-button      → openLink(id)
+ *   click .btn-delete-link  → deleteLink(id)
+ *
+ * Direct binding:
+ *   #btn-add-link click → addLink(labelInput.value, urlInput.value)
+ *
+ * Requirements: 10.1, 10.2, 11.1, 13.2
+ */
+function initQuickLinks() {
+  var listEl     = document.getElementById("quicklinks-list");
+  var addLinkBtn = document.getElementById("btn-add-link");
+  var labelInput = document.getElementById("link-label-input");
+  var urlInput   = document.getElementById("link-url-input");
+
+  // ── Event delegation — clicks inside #quicklinks-list ─────
+  if (listEl) {
+    listEl.addEventListener("click", function (e) {
+      var target = e.target;
+
+      if (target.classList.contains("link-button")) {
+        var linkId = target.getAttribute("data-id");
+        if (linkId) openLink(linkId);
+
+      } else if (target.classList.contains("btn-delete-link")) {
+        var deleteId = target.getAttribute("data-id");
+        if (deleteId) deleteLink(deleteId);
+      }
+    });
+  }
+
+  // ── Add link via button click ─────────────────────────────
+  if (addLinkBtn) {
+    addLinkBtn.addEventListener("click", function () {
+      clearError("quicklinks-error");
+      var lbl = labelInput ? labelInput.value : "";
+      var url = urlInput   ? urlInput.value   : "";
+      addLink(lbl, url);
+    });
+  }
+
+  renderQuickLinks();
+}
+
+/* =============================================================
+   SECTION 9 — APP BOOTSTRAP
+   ============================================================= */
+
+/**
+ * init() — entry point called on DOMContentLoaded.
+ *
+ * Loads persisted data into state, then initialises every widget.
+ *
+ * Requirements: 9.1, 10.1, 10.5, 13.2
+ */
+document.addEventListener("DOMContentLoaded", function () {
+  state.tasks = loadTasks();
+  state.links = loadLinks();
+  initGreeting();
+  initTimer();
+  initTodoList();
+  initQuickLinks();
+});

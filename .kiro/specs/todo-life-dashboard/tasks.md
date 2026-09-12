@@ -250,8 +250,8 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - Call `renderTodoList()`
     - _Requirements: 5.1, 9.1, 9.2, 9.3_
 
-- [~] 12. JS Section 8 — Quick Links Widget
-  - [-] 12.1 Implement `renderQuickLinks()`
+- [x] 12. JS Section 8 — Quick Links Widget
+  - [x] 12.1 Implement `renderQuickLinks()`
     - Replace `#quicklinks-list` `innerHTML`
     - If `state.links` is empty, render `.empty-state` message
     - Otherwise render one `<li class="link-item">` per link: a button (`.link-button`) with `link.label` as text, and a delete button (`.btn-delete-link`)
@@ -261,11 +261,11 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 15: renderQuickLinks produces exactly one button per Link**
     - **Validates: Requirements 10.2**
 
-  - [-] 12.3 Implement link button click handler for URL launching
+  - [x] 12.3 Implement link button click handler for URL launching
     - On `.link-button` click: validate URL with `isValidURL`; if invalid show inline error and do NOT open a tab; if valid call `window.open(link.url, "_blank")`
     - _Requirements: 10.3, 10.6_
 
-  - [-] 12.4 Implement `addLink(label, url)`
+  - [x] 12.4 Implement `addLink(label, url)`
     - Validate with `isValidLinkInput`; on failure show field-specific error and return without creating a link
     - Create Link object: `{ id: String(Date.now() + Math.random()), label: label.trim(), url: url.trim() }`
     - Push to `state.links`, clear both input fields, call `saveLinks` inside `try/catch`
@@ -277,19 +277,19 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 13: Link creation produces a link with the provided label and URL**
     - **Validates: Requirements 11.2**
 
-  - [-] 12.6 Implement `deleteLink(id)`
+  - [x] 12.6 Implement `deleteLink(id)`
     - Remove from `state.links`, call `saveLinks` inside `try/catch`
     - On storage failure (Req 12.5): rollback — re-insert the link at its original index, show `#quicklinks-error`, call `renderQuickLinks()`
     - On success: call `renderQuickLinks()`
     - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5_
 
-  - [-] 12.7 Implement `initQuickLinks()`
+  - [x] 12.7 Implement `initQuickLinks()`
     - Set up event delegation on `#quicklinks-list` for link button clicks and delete button clicks
     - Bind `#btn-add-link` click to `addLink` reading from `#link-label-input` and `#link-url-input`
     - Call `renderQuickLinks()`
     - _Requirements: 10.1, 10.2, 11.1, 13.2_
 
-- [~] 13. JS Section 9 — App Bootstrap and wiring
+- [x] 13. JS Section 9 — App Bootstrap and wiring
   - Add `document.addEventListener("DOMContentLoaded", function() { … })` that:
     1. Calls `loadTasks()` and assigns result to `state.tasks`
     2. Calls `loadLinks()` and assigns result to `state.links`
@@ -300,7 +300,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
   - This is the final integration step — all sections must be implemented before this runs correctly
   - _Requirements: 9.1, 9.2, 10.1, 13.2, 14.3_
 
-- [~] 14. Checkpoint — Ensure all core functionality works end-to-end
+- [x] 14. Checkpoint — Ensure all core functionality works end-to-end
   - Ensure all tests pass (if test suite exists), ask the user if questions arise.
   - Open `index.html` via `file://` and verify: clock updates every second, greeting changes with time, timer counts down and beeps, tasks persist across refresh, links open in new tabs
 
@@ -328,7 +328,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - Test Reset from Running clears interval and restores 25:00 (Req 4.8)
     - _Requirements: 3.4, 4.2, 4.3, 4.4, 4.7, 4.8_
 
-- [~] 16. Final checkpoint — Verify complete implementation
+- [-] 16. Final checkpoint — Verify complete implementation
   - Ensure all tests pass (if test suite exists), ask the user if questions arise.
   - Confirm the file opens correctly via `file://` in Chrome, Firefox, Edge, and Safari with no console errors
   - Confirm all four widgets render, all `localStorage` paths work (add/edit/delete/toggle + refresh), and the responsive layout holds at 320px and 1920px viewports
