@@ -1,0 +1,476 @@
+/* css/style.css — To-do-List Life Dashboard */
+
+/* ==========================================================================
+   SECTION 1 — CSS CUSTOM PROPERTIES (DESIGN TOKENS)
+   Task 3.1 | Requirements: 15.4
+   ========================================================================== */
+
+:root {
+  --color-bg:      #f8f9fa;
+  --color-surface: #ffffff;
+  --color-primary: #4a6fa5;
+  --color-text:    #212529;
+  --color-muted:   #6c757d;
+  --color-error:   #dc3545;
+  --color-success: #28a745;
+  --radius:        8px;
+  --shadow:        0 2px 8px rgba(0, 0, 0, 0.08);
+  --spacing-sm:    0.5rem;
+  --spacing-md:    1rem;
+  --spacing-lg:    1.5rem;
+}
+
+/* ==========================================================================
+   SECTION 2 — BOX-MODEL RESET
+   Task 3.1 | Requirements: 15.4
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* ==========================================================================
+   SECTION 3 — BASE TYPOGRAPHY & FLUID FONT SIZING
+   Task 3.2 | Requirements: 15.3, 15.4
+   ========================================================================== */
+
+html {
+  /* Anchor rem units to the browser default (16px) */
+  font-size: 100%;
+}
+
+body {
+  /* Fluid font: min 12px, preferred 1.5vw, max 16px */
+  font-size: clamp(12px, 1.5vw, 16px);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  margin: 0;
+  padding: 0;
+}
+
+/* Heading — 1.5rem (~24px at base 16px).
+   Satisfies: heading at least 4px larger than label (1.125rem ≈ 18px → gap ≈ 6px). */
+h1,
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--color-text);
+}
+
+/* Label / sub-heading — 1.125rem (~18px at base 16px).
+   Satisfies: label at least 2px larger than body (1rem = 16px → gap = 2px). */
+label,
+.label,
+.sub-heading {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+/* Body text anchored to 1rem (≥12px after clamp on body). */
+p,
+li,
+input,
+button,
+textarea {
+  font-size: 1rem;
+}
+
+/* Reset default margins on common elements */
+p {
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input,
+button,
+textarea {
+  font-family: inherit;
+  line-height: inherit;
+}
+
+/* ==========================================================================
+   SECTION 4 — RESPONSIVE DASHBOARD GRID
+   Task 3.3 | Requirements: 15.4
+   ========================================================================== */
+
+/* Auto-fit grid: each column is at least 300px wide; gaps expand to fill space */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  min-height: 100vh;
+}
+
+/* >= 768px: explicit 2-column layout */
+@media (min-width: 768px) {
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* < 768px: single-column, full-width widgets */
+@media (max-width: 767px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   SECTION 5 — WIDGET CARD BASE STYLES
+   Task 4.1 | Requirements: 15.3
+   ========================================================================== */
+
+.widget {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* ==========================================================================
+   SECTION 6 — COMPLETED TASK VISUAL DISTINCTION
+   Task 4.2 | Requirements: 7.2, 7.3
+   ========================================================================== */
+
+/* Strikethrough + reduced opacity for completed tasks */
+.task-item.completed .task-text {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+/* ==========================================================================
+   SECTION 7 — ERROR STATE & INLINE ERROR STYLES
+   Task 4.3 | Requirements: 5.5, 5.6, 6.6, 6.7, 7.5, 8.5, 11.4, 11.5, 11.6, 12.5
+   ========================================================================== */
+
+/* Hidden by default; shown when populated via JS (style.display = "block") */
+.error {
+  display: none;
+  color: var(--color-error);
+  font-size: 0.875rem;     /* readable, smaller than body text */
+  margin-top: var(--spacing-sm);
+  line-height: 1.4;
+}
+
+/* Per-item task errors share the same base style */
+.task-error {
+  display: none;
+  color: var(--color-error);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   SECTION 8 — FOCUS TIMER WIDGET STYLES
+   Task 4.4 | Requirements: 4.5, 4.6
+   ========================================================================== */
+
+/* Prominent countdown display */
+#timer-display {
+  font-size: 3.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+  text-align: center;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+/* Controls row — centered with consistent spacing */
+#timer-controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+/* Timer buttons shared base */
+#timer-controls button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: opacity 0.15s ease, background 0.15s ease;
+  min-width: 5rem;
+}
+
+#timer-controls button:hover:not(:disabled) {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+/* Clear disabled visual feedback — reduced opacity */
+#timer-controls button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   SECTION 9 — TO-DO LIST WIDGET STYLES
+   Task 4.5 | Requirements: 5.1, 6.2
+   ========================================================================== */
+
+/* Input row: text input expands, button stays fixed width */
+#todo-input-area {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+#todo-input {
+  flex: 1 1 0;
+  min-width: 0;   /* prevents overflow in flex context */
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid #ced4da;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  transition: border-color 0.15s ease;
+}
+
+#todo-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+}
+
+#btn-add-task {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+#btn-add-task:hover {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+/* Task list items — flex row: checkbox | text | action buttons */
+.task-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid #e9ecef;
+  flex-wrap: wrap;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.task-checkbox {
+  flex-shrink: 0;
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.task-text {
+  flex: 1 1 0;
+  min-width: 0;
+  word-break: break-word;
+  color: var(--color-text);
+}
+
+/* Edit mode: inline input replaces the task text span */
+.task-edit-input {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.25rem var(--spacing-sm);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.task-edit-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+}
+
+/* Action buttons (Edit / Delete / Save / Cancel) */
+.btn-edit,
+.btn-delete,
+.btn-save,
+.btn-cancel {
+  flex-shrink: 0;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid #ced4da;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-edit:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-delete:hover,
+.btn-cancel:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.btn-save:hover {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+/* ==========================================================================
+   SECTION 10 — QUICK LINKS WIDGET STYLES
+   Task 4.6 | Requirements: 10.4, 11.2
+   ========================================================================== */
+
+/* Two-input + button layout */
+#quicklinks-input-area {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+#link-label-input,
+#link-url-input {
+  flex: 1 1 8rem;
+  min-width: 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid #ced4da;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  transition: border-color 0.15s ease;
+}
+
+#link-label-input:focus,
+#link-url-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+}
+
+#btn-add-link {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+#btn-add-link:hover {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+/* Link list items */
+.link-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.link-item:last-child {
+  border-bottom: none;
+}
+
+/* Visually distinct link card button */
+.link-button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.link-button:hover,
+.link-button:focus {
+  background: var(--color-primary);
+  color: #fff;
+  outline: none;
+}
+
+/* Delete link button */
+.btn-delete-link {
+  flex-shrink: 0;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid #ced4da;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-delete-link:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+/* Empty state message */
+.empty-state {
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  text-align: center;
+  padding: var(--spacing-md) 0;
+  font-style: italic;
+}

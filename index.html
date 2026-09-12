@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Life Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="dashboard">
+
+    <section id="greeting-widget" class="widget">
+      <div id="greeting-message"></div>
+      <div id="clock-display"></div>
+      <div id="date-display"></div>
+    </section>
+
+    <section id="timer-widget" class="widget">
+      <h2>Focus Timer</h2>
+      <div id="timer-display">25:00</div>
+      <div id="timer-controls">
+        <button id="btn-start">Start</button>
+        <button id="btn-stop" disabled>Stop</button>
+        <button id="btn-reset">Reset</button>
+      </div>
+    </section>
+
+    <section id="todo-widget" class="widget">
+      <h2>To-Do List</h2>
+      <div id="todo-input-area">
+        <input type="text" id="todo-input" maxlength="500" placeholder="Add a task…">
+        <button id="btn-add-task">Add</button>
+        <p id="todo-input-error" class="error" aria-live="polite"></p>
+      </div>
+      <ul id="todo-list"></ul>
+    </section>
+
+    <section id="quicklinks-widget" class="widget">
+      <h2>Quick Links</h2>
+      <div id="quicklinks-input-area">
+        <input type="text" id="link-label-input" maxlength="100" placeholder="Label">
+        <input type="url"  id="link-url-input"   maxlength="2048" placeholder="https://…">
+        <button id="btn-add-link">Add Link</button>
+        <p id="quicklinks-error" class="error" aria-live="polite"></p>
+      </div>
+      <ul id="quicklinks-list"></ul>
+    </section>
+
+  </main>
+  <script src="js/app.js"></script>
+</body>
+</html>

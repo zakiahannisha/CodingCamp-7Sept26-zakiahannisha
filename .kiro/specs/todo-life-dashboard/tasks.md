@@ -8,84 +8,84 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
 
 ## Tasks
 
-- [ ] 1. Project scaffolding — create directory structure and entry point
+- [~] 1. Project scaffolding — create directory structure and entry point
   - Create `css/` directory and empty `css/style.css` file
   - Create `js/` directory and empty `js/app.js` file
   - Create `index.html` in the project root with correct `<!DOCTYPE html>` boilerplate, `<link rel="stylesheet" href="css/style.css">`, and `<script src="js/app.js"></script>`
   - Verify the file opens via `file://` protocol in a browser without console errors
   - _Requirements: 14.2, 14.3, 14.4, 14.6_
 
-- [ ] 2. HTML structure — widget sections and all required IDs
-  - [ ] 2.1 Implement `<head>` metadata and charset/viewport declarations
+- [x] 2. HTML structure — widget sections and all required IDs
+  - [x] 2.1 Implement `<head>` metadata and charset/viewport declarations
     - Add `<meta charset="UTF-8">`, `<meta name="viewport" content="width=device-width, initial-scale=1.0">`, and `<title>Life Dashboard</title>`
     - Confirm no `<style>` blocks exist anywhere in the HTML file
     - _Requirements: 14.1, 14.2_
 
-  - [ ] 2.2 Implement Greeting Widget HTML section
+  - [x] 2.2 Implement Greeting Widget HTML section
     - Add `<section id="greeting-widget" class="widget">` containing `<div id="greeting-message">`, `<div id="clock-display">`, and `<div id="date-display">`
     - _Requirements: 1.1, 1.2, 2.1_
 
-  - [ ] 2.3 Implement Focus Timer Widget HTML section
+  - [x] 2.3 Implement Focus Timer Widget HTML section
     - Add `<section id="timer-widget" class="widget">` with `<h2>Focus Timer</h2>`, `<div id="timer-display">25:00</div>`, and `<div id="timer-controls">` containing `<button id="btn-start">`, `<button id="btn-stop" disabled>`, `<button id="btn-reset">`
     - _Requirements: 3.1, 4.1_
 
-  - [ ] 2.4 Implement To-Do List Widget HTML section
+  - [x] 2.4 Implement To-Do List Widget HTML section
     - Add `<section id="todo-widget" class="widget">` with input area (`#todo-input` maxlength 500, `#btn-add-task`, `#todo-input-error` with `aria-live="polite"`) and `<ul id="todo-list">`
     - _Requirements: 5.1, 5.6_
 
-  - [ ] 2.5 Implement Quick Links Widget HTML section
+  - [x] 2.5 Implement Quick Links Widget HTML section
     - Add `<section id="quicklinks-widget" class="widget">` with `#link-label-input` (maxlength 100), `#link-url-input` (type="url", maxlength 2048), `#btn-add-link`, `#quicklinks-error` with `aria-live="polite"`, and `<ul id="quicklinks-list">`
     - _Requirements: 11.1, 10.4_
 
-- [ ] 3. CSS foundation — custom properties, reset, typography, and responsive grid
-  - [ ] 3.1 Implement CSS custom properties and box-model reset
+- [x] 3. CSS foundation — custom properties, reset, typography, and responsive grid
+  - [x] 3.1 Implement CSS custom properties and box-model reset
     - Define `:root` custom properties: `--color-bg`, `--color-surface`, `--color-primary`, `--color-text`, `--color-muted`, `--color-error`, `--color-success`, `--radius`, `--shadow`, `--spacing-sm`, `--spacing-md`, `--spacing-lg`
     - Add `*, *::before, *::after { box-sizing: border-box; }` and `max-width: 100%` on all elements to prevent horizontal overflow
     - _Requirements: 15.4_
 
-  - [ ] 3.2 Implement base typography and fluid font sizing
+  - [x] 3.2 Implement base typography and fluid font sizing
     - Set `body { font-size: clamp(12px, 1.5vw, 16px); }` to ensure minimum 12px body font
     - Set `h2` at `1.5rem` and label/sub-heading elements at `1.125rem`, ensuring heading text is at least 4px larger than label text and label text is at least 2px larger than body text
     - _Requirements: 15.3, 15.4_
 
-  - [ ] 3.3 Implement responsive dashboard grid layout
+  - [x] 3.3 Implement responsive dashboard grid layout
     - Apply `display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; padding: 1.5rem;` to `.dashboard`
     - Add media query breakpoints: 2-column grid at `>= 768px`, 1-column at `< 768px`
     - Verify no horizontal scrolling occurs at any viewport width from 320px to 1920px
     - _Requirements: 15.4_
 
-- [ ] 4. CSS widget styles — cards, states, and component-specific rules
-  - [ ] 4.1 Implement `.widget` card base styles
+- [x] 4. CSS widget styles — cards, states, and component-specific rules
+  - [x] 4.1 Implement `.widget` card base styles
     - Apply background (`--color-surface`), `border-radius: var(--radius)`, `box-shadow: var(--shadow)`, and padding to `.widget`
     - _Requirements: 15.3_
 
-  - [ ] 4.2 Implement completed task visual distinction
+  - [x] 4.2 Implement completed task visual distinction
     - Add `.task-item.completed .task-text { text-decoration: line-through; opacity: 0.5; }` to fulfill the strikethrough and reduced-opacity requirement
     - _Requirements: 7.2, 7.3_
 
-  - [ ] 4.3 Implement error state and inline error styles
+  - [x] 4.3 Implement error state and inline error styles
     - Style `.error` elements: default `display: none`, visible state with `color: var(--color-error)`, readable font size
     - Ensure `.error` is hidden when empty and visible when populated
     - _Requirements: 5.5, 5.6, 6.6, 6.7, 7.5, 8.5, 11.4, 11.5, 11.6, 12.5_
 
-  - [ ] 4.4 Implement Focus Timer widget-specific styles
+  - [x] 4.4 Implement Focus Timer widget-specific styles
     - Style `#timer-display` with prominent font size for the countdown readout
     - Style `#timer-controls` as a flex row with consistent button spacing
     - Style disabled button state with reduced opacity to give clear visual feedback
     - _Requirements: 4.5, 4.6_
 
-  - [ ] 4.5 Implement To-Do List widget-specific styles
+  - [x] 4.5 Implement To-Do List widget-specific styles
     - Style `#todo-input-area` as a flex row; style `.task-item` with flex layout showing checkbox, text, and action buttons
     - Style edit mode: inline input field replaces task text span
     - _Requirements: 5.1, 6.2_
 
-  - [ ] 4.6 Implement Quick Links widget-specific styles
+  - [x] 4.6 Implement Quick Links widget-specific styles
     - Style `#quicklinks-input-area` for two-input + button layout
     - Style `.link-item` and `.link-button` as accessible, visually distinct link cards
     - Style `.empty-state` message for when no links exist
     - _Requirements: 10.4, 11.2_
 
-- [ ] 5. JS Section 1 — Constants & Configuration
+- [x] 5. JS Section 1 — Constants & Configuration
   - Add all constants to the top of `js/app.js`:
     - `STORAGE_KEY_TASKS = "tasks"`, `STORAGE_KEY_LINKS = "quickLinks"`
     - `TIMER_DURATION = 25 * 60` (1500 seconds)
@@ -93,8 +93,8 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - `DAYS` array (`["Sunday","Monday",…,"Saturday"]`) and `MONTHS` array (`["January","February",…,"December"]`)
   - _Requirements: 14.3_
 
-- [ ] 6. JS Section 2 — Utility Helper functions
-  - [ ] 6.1 Implement `formatTime(date)` and `formatDate(date)`
+- [x] 6. JS Section 2 — Utility Helper functions
+  - [x] 6.1 Implement `formatTime(date)` and `formatDate(date)`
     - `formatTime` pads hours, minutes, seconds to 2 digits → `"HH:MM:SS"`
     - `formatDate` constructs `"Weekday, D Month YYYY"` from the `DAYS` and `MONTHS` arrays
     - _Requirements: 1.1, 1.2_
@@ -105,7 +105,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 2: Date formatter includes all four required components**
     - **Validates: Requirements 1.2**
 
-  - [ ] 6.3 Implement `getGreeting(date)`
+  - [x] 6.3 Implement `getGreeting(date)`
     - Map hour 5–11 → `"Good Morning"`, 12–17 → `"Good Afternoon"`, 18–23 and 0–4 → `"Good Evening"`; return `"Good Day"` when `date` is null/unavailable
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.6_
 
@@ -113,7 +113,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 3: Greeting maps every hour to the correct message**
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
 
-  - [ ] 6.5 Implement `formatTimer(seconds)`
+  - [x] 6.5 Implement `formatTimer(seconds)`
     - Convert integer seconds (0–1500) to `"MM:SS"` string with zero-padding
     - _Requirements: 3.3_
 
@@ -121,7 +121,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 4: Timer formatter produces valid MM:SS strings**
     - **Validates: Requirements 3.3**
 
-  - [ ] 6.7 Implement `isValidTaskInput(str)`, `isValidURL(str)`, and `isValidLinkInput(label, url)`
+  - [x] 6.7 Implement `isValidTaskInput(str)`, `isValidURL(str)`, and `isValidLinkInput(label, url)`
     - `isValidTaskInput`: return `false` for `null`, empty, or whitespace-only strings
     - `isValidURL`: return `true` only when `str` starts with `"http://"` or `"https://"`
     - `isValidLinkInput`: return `false` when label is empty/whitespace, URL is empty/whitespace, or URL fails `isValidURL`
@@ -135,14 +135,14 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 14: Empty or whitespace label or URL is invalid link input**
     - **Validates: Requirements 11.4**
 
-- [ ] 7. JS Section 3 — Storage Manager
-  - [ ] 7.1 Implement `loadTasks()` and `loadLinks()`
+- [x] 7. JS Section 3 — Storage Manager
+  - [x] 7.1 Implement `loadTasks()` and `loadLinks()`
     - Call `localStorage.getItem(key)`; return `[]` if result is `null`
     - `JSON.parse` inside `try/catch`; on error log to console and return `[]`
     - Validate the parsed result is an array; if not, return `[]`
     - _Requirements: 9.1, 9.3, 9.4, 10.1, 13.2, 13.3_
 
-  - [ ] 7.2 Implement `saveTasks(tasks)` and `saveLinks(links)`
+  - [x] 7.2 Implement `saveTasks(tasks)` and `saveLinks(links)`
     - Serialize with `JSON.stringify`, write with `localStorage.setItem` inside `try/catch`
     - On failure, throw an `Error` so calling widget functions can catch and surface it
     - _Requirements: 5.4, 6.4, 7.4, 8.4, 9.5, 9.6, 9.7, 13.1_
@@ -153,7 +153,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 11: Link list serialization round-trip preserves all fields**
     - **Validates: Requirements 13.5, 13.1, 13.2**
 
-- [ ] 8. JS Section 4 — State Store initialization
+- [x] 8. JS Section 4 — State Store initialization
   - Define the `state` object at module scope:
     ```js
     var state = { tasks: [], links: [], timer: { status: "Idle", remainingSeconds: 1500, intervalId: null } };
@@ -161,7 +161,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
   - Document that all widget mutations go through widget functions, never direct external mutation
   - _Requirements: 9.1, 13.2_
 
-- [ ] 9. JS Section 5 — Greeting Widget
+- [~] 9. JS Section 5 — Greeting Widget
   - [ ] 9.1 Implement `renderGreeting()`
     - Call `new Date()` inside a `try/catch`; on failure set `#clock-display` and `#date-display` to unavailability placeholder and `#greeting-message` to `"Good Day"`
     - On success: set `#clock-display` using `formatTime`, `#date-display` using `formatDate`, `#greeting-message` using `getGreeting`
@@ -171,7 +171,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - Call `renderGreeting()` immediately, then start a `setInterval(renderGreeting, 1000)` to update once per second
     - _Requirements: 1.3, 1.4, 2.5_
 
-- [ ] 10. JS Section 6 — Focus Timer Widget
+- [~] 10. JS Section 6 — Focus Timer Widget
   - [ ] 10.1 Implement `renderTimer()`
     - Update `#timer-display` using `formatTimer(state.timer.remainingSeconds)`
     - Set `disabled` on `#btn-start`, `#btn-stop`, `#btn-reset` according to the state machine invariant (Property 6)
@@ -202,7 +202,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - Call `renderTimer()` to set initial display to `"25:00"` with correct button states
     - _Requirements: 3.1, 4.1_
 
-- [ ] 11. JS Section 7 — To-Do List Widget
+- [~] 11. JS Section 7 — To-Do List Widget
   - [ ] 11.1 Implement `showError(elementId, message)` and `clearError(elementId)` helpers
     - `showError`: get element by ID, set `textContent` and `style.display = "block"`
     - `clearError`: set `textContent = ""` and `style.display = "none"`
@@ -250,7 +250,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - Call `renderTodoList()`
     - _Requirements: 5.1, 9.1, 9.2, 9.3_
 
-- [ ] 12. JS Section 8 — Quick Links Widget
+- [~] 12. JS Section 8 — Quick Links Widget
   - [ ] 12.1 Implement `renderQuickLinks()`
     - Replace `#quicklinks-list` `innerHTML`
     - If `state.links` is empty, render `.empty-state` message
@@ -289,7 +289,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - Call `renderQuickLinks()`
     - _Requirements: 10.1, 10.2, 11.1, 13.2_
 
-- [ ] 13. JS Section 9 — App Bootstrap and wiring
+- [~] 13. JS Section 9 — App Bootstrap and wiring
   - Add `document.addEventListener("DOMContentLoaded", function() { … })` that:
     1. Calls `loadTasks()` and assigns result to `state.tasks`
     2. Calls `loadLinks()` and assigns result to `state.links`
@@ -300,7 +300,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
   - This is the final integration step — all sections must be implemented before this runs correctly
   - _Requirements: 9.1, 9.2, 10.1, 13.2, 14.3_
 
-- [ ] 14. Checkpoint — Ensure all core functionality works end-to-end
+- [~] 14. Checkpoint — Ensure all core functionality works end-to-end
   - Ensure all tests pass (if test suite exists), ask the user if questions arise.
   - Open `index.html` via `file://` and verify: clock updates every second, greeting changes with time, timer counts down and beeps, tasks persist across refresh, links open in new tabs
 
@@ -328,7 +328,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - Test Reset from Running clears interval and restores 25:00 (Req 4.8)
     - _Requirements: 3.4, 4.2, 4.3, 4.4, 4.7, 4.8_
 
-- [ ] 16. Final checkpoint — Verify complete implementation
+- [~] 16. Final checkpoint — Verify complete implementation
   - Ensure all tests pass (if test suite exists), ask the user if questions arise.
   - Confirm the file opens correctly via `file://` in Chrome, Firefox, Edge, and Safari with no console errors
   - Confirm all four widgets render, all `localStorage` paths work (add/edit/delete/toggle + refresh), and the responsive layout holds at 320px and 1920px viewports
