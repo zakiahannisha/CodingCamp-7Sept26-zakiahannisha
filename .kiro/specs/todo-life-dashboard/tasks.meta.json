@@ -269,6 +269,218 @@
         "chatSessionId": "sess_10ed1d98-e659-414a-941d-94ccc630637d",
         "timestamp": 1789191720252
       }
+    ],
+    "9.1 Implement `renderGreeting()`": [
+      {
+        "executionId": "a816e097-2555-4bb0-b1d3-64e1fa8676d8",
+        "chatSessionId": "sess_8f832a52-d864-4132-9d57-1a662420c2e3",
+        "timestamp": 1789191757264
+      },
+      {
+        "executionId": "a816e097-2555-4bb0-b1d3-64e1fa8676d8",
+        "chatSessionId": "sess_8f832a52-d864-4132-9d57-1a662420c2e3",
+        "timestamp": 1789191808462
+      }
+    ],
+    "9.2 Implement `initGreeting()`": [
+      {
+        "executionId": "a816e097-2555-4bb0-b1d3-64e1fa8676d8",
+        "chatSessionId": "sess_8f832a52-d864-4132-9d57-1a662420c2e3",
+        "timestamp": 1789191820628
+      },
+      {
+        "executionId": "a816e097-2555-4bb0-b1d3-64e1fa8676d8",
+        "chatSessionId": "sess_8f832a52-d864-4132-9d57-1a662420c2e3",
+        "timestamp": 1789191830623
+      }
+    ],
+    "9. JS Section 5 — Greeting Widget": [
+      {
+        "executionId": "a816e097-2555-4bb0-b1d3-64e1fa8676d8",
+        "chatSessionId": "sess_8f832a52-d864-4132-9d57-1a662420c2e3",
+        "timestamp": 1789191830738
+      }
+    ],
+    "10.1 Implement `renderTimer()`": [
+      {
+        "executionId": "28ae6575-1521-429c-9bb8-a16469d2e55f",
+        "chatSessionId": "sess_b2f16ec8-5336-4947-ad84-2702f0081673",
+        "timestamp": 1789191863217
+      },
+      {
+        "executionId": "28ae6575-1521-429c-9bb8-a16469d2e55f",
+        "chatSessionId": "sess_b2f16ec8-5336-4947-ad84-2702f0081673",
+        "timestamp": 1789192889117
+      }
+    ],
+    "10.3 Implement `startTimer()`": [
+      {
+        "executionId": "28ae6575-1521-429c-9bb8-a16469d2e55f",
+        "chatSessionId": "sess_b2f16ec8-5336-4947-ad84-2702f0081673",
+        "timestamp": 1789191867487
+      },
+      {
+        "executionId": "28ae6575-1521-429c-9bb8-a16469d2e55f",
+        "chatSessionId": "sess_b2f16ec8-5336-4947-ad84-2702f0081673",
+        "timestamp": 1789192893122
+      }
+    ],
+    "10.5 Implement `stopTimer()`, `resetTimer()`, and `completeTimer()`": [
+      {
+        "executionId": "28ae6575-1521-429c-9bb8-a16469d2e55f",
+        "chatSessionId": "sess_b2f16ec8-5336-4947-ad84-2702f0081673",
+        "timestamp": 1789191871687
+      },
+      {
+        "executionId": "28ae6575-1521-429c-9bb8-a16469d2e55f",
+        "chatSessionId": "sess_b2f16ec8-5336-4947-ad84-2702f0081673",
+        "timestamp": 1789192897416
+      }
+    ],
+    "10.6 Implement `initTimer()`": [
+      {
+        "executionId": "28ae6575-1521-429c-9bb8-a16469d2e55f",
+        "chatSessionId": "sess_b2f16ec8-5336-4947-ad84-2702f0081673",
+        "timestamp": 1789191875761
+      },
+      {
+        "executionId": "28ae6575-1521-429c-9bb8-a16469d2e55f",
+        "chatSessionId": "sess_b2f16ec8-5336-4947-ad84-2702f0081673",
+        "timestamp": 1789192901752
+      }
+    ],
+    "10. JS Section 6 — Focus Timer Widget": [
+      {
+        "executionId": "28ae6575-1521-429c-9bb8-a16469d2e55f",
+        "chatSessionId": "sess_b2f16ec8-5336-4947-ad84-2702f0081673",
+        "timestamp": 1789192901846
+      }
+    ],
+    "11.1 Implement `showError(elementId, message)` and `clearError(elementId)` helpers": [
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789192928364
+      },
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193115155
+      }
+    ],
+    "11.2 Implement `renderTodoList()`": [
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789192932919
+      },
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193119311
+      }
+    ],
+    "11.3 Implement `addTask(text)`": [
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193123410
+      },
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193127546
+      }
+    ],
+    "11.5 Implement `editTask(id, newText)` with inline editing flow": [
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193133233
+      },
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193137408
+      }
+    ],
+    "11.6 Implement `toggleTask(id)`": [
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193141414
+      },
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193145570
+      }
+    ],
+    "11.8 Implement `deleteTask(id)` with confirmation prompt": [
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193151243
+      },
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193155441
+      }
+    ],
+    "11.9 Implement `initTodoList()`": [
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193159860
+      },
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193167647
+      }
+    ],
+    "11. JS Section 7 — To-Do List Widget": [
+      {
+        "executionId": "641fac59-54f2-4305-aefa-20fa55245657",
+        "chatSessionId": "sess_9c13f24f-2494-4020-8b69-69c50907e676",
+        "timestamp": 1789193167802
+      }
+    ],
+    "12.1 Implement `renderQuickLinks()`": [
+      {
+        "executionId": "22ce4e50-3d40-4609-b4b2-b20e66453e53",
+        "chatSessionId": "sess_5b179403-e027-4636-83ca-2a694778947a",
+        "timestamp": 1789193215778
+      }
+    ],
+    "12.3 Implement link button click handler for URL launching": [
+      {
+        "executionId": "22ce4e50-3d40-4609-b4b2-b20e66453e53",
+        "chatSessionId": "sess_5b179403-e027-4636-83ca-2a694778947a",
+        "timestamp": 1789193220089
+      }
+    ],
+    "12.4 Implement `addLink(label, url)`": [
+      {
+        "executionId": "22ce4e50-3d40-4609-b4b2-b20e66453e53",
+        "chatSessionId": "sess_5b179403-e027-4636-83ca-2a694778947a",
+        "timestamp": 1789193224015
+      }
+    ],
+    "12.6 Implement `deleteLink(id)`": [
+      {
+        "executionId": "22ce4e50-3d40-4609-b4b2-b20e66453e53",
+        "chatSessionId": "sess_5b179403-e027-4636-83ca-2a694778947a",
+        "timestamp": 1789193228263
+      }
+    ],
+    "12.7 Implement `initQuickLinks()`": [
+      {
+        "executionId": "22ce4e50-3d40-4609-b4b2-b20e66453e53",
+        "chatSessionId": "sess_5b179403-e027-4636-83ca-2a694778947a",
+        "timestamp": 1789193233250
+      }
     ]
   }
 }

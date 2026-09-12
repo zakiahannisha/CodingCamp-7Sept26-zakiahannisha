@@ -282,3 +282,663 @@ var state = {
     intervalId: null
   }
 };
+
+/* =============================================================
+   SECTION 5 — GREETING WIDGET
+   ============================================================= */
+
+/**
+ * renderGreeting() — reads the current system clock and updates the three
+ * greeting-widget DOM elements.
+ *
+ * Success path (clock available):
+ *   #clock-display   ← formatTime(date)  e.g. "14:32:07"
+ *   #date-display    ← formatDate(date)  e.g. "Monday, 7 September 2026"
+ *   #greeting-message← getGreeting(date) e.g. "Good Afternoon"
+ *
+ * Failure path (new Date() throws or clock is otherwise unavailable):
+ *   #clock-display   ← "Time unavailable"
+ *   #date-display    ← "Time unavailable"
+ *   #greeting-message← "Good Day"
+ *
+ * Requirements: 1.1, 1.2, 1.5, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6
+ */
+function renderGreeting() {
+  var clockEl    = document.getElementById("clock-display");
+  var dateEl     = document.getElementById("date-display");
+  var greetingEl = document.getElementById("greeting-message");
+
+  try {
+    var date = new Date();
+    // Verify the Date is valid before using it
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid date");
+    }
+    if (clockEl)    clockEl.textContent    = formatTime(date);
+    if (dateEl)     dateEl.textContent     = formatDate(date);
+    if (greetingEl) greetingEl.textContent = getGreeting(date);
+  } catch (e) {
+    if (clockEl)    clockEl.textContent    = "Time unavailable";
+    if (dateEl)     dateEl.textContent     = "Time unavailable";
+    if (greetingEl) greetingEl.textContent = "Good Day";
+  }
+}
+
+/**
+ * initGreeting() — immediately renders the greeting widget and then
+ * schedules it to refresh once per second so the clock never falls
+ * more than 1 second behind the system clock.
+ *
+ * Requirements: 1.3, 1.4, 2.5
+ */
+function initGreeting() {
+  renderGreeting();
+  setInterval(renderGreeting, 1000);
+}
+
+/* =============================================================
+   SECTION 6 — FOCUS TIMER WIDGET
+   ============================================================= */
+
+/**
+ * renderTimer() — updates the timer display and button disabled states
+ * based on the current timer state machine status.
+ *
+ * Button state invariant (Property 6):
+ *   "Running"           → Start disabled, Stop enabled,  Reset enabled
+ *   "Idle" | "Paused"  → Start enabled,  Stop disabled, Reset enabled
+ *   "Completed"        → Start disabled, Stop disabled,  Reset enabled
+ *
+ * Requirements: 3.1, 3.3, 4.5, 4.6
+ */
+function renderTimer() {
+  var displayEl = document.getElementById("timer-display");
+  var btnStart  = document.getElementById("btn-start");
+  var btnStop   = document.getElementById("btn-stop");
+  var btnReset  = document.getElementById("btn-reset");
+
+  if (displayEl) {
+    displayEl.textContent = formatTimer(state.timer.remainingSeconds);
+  }
+
+  if (!btnStart || !btnStop || !btnReset) return;
+
+  var status = state.timer.status;
+
+  if (status === "Running") {
+    btnStart.disabled = true;
+    btnStop.disabled  = false;
+    btnReset.disabled = false;
+  } else if (status === "Completed") {
+    btnStart.disabled = true;
+    btnStop.disabled  = true;
+    btnReset.disabled = false;
+  } else {
+    // "Idle" or "Paused"
+    btnStart.disabled = false;
+    btnStop.disabled  = true;
+    btnReset.disabled = false;
+  }
+}
+
+/**
+ * startTimer() — transitions the timer from Idle or Paused to Running
+ * and begins the 1-second countdown interval.
+ *
+ * Guard: does nothing if status is already "Running" or "Completed".
+ *
+ * Each tick decrements remainingSeconds by 1. When it reaches 0,
+ * completeTimer() is called instead of another decrement.
+ *
+ * Requirements: 3.2, 4.3, 4.7
+ */
+function startTimer() {
+  var status = state.timer.status;
+  if (status === "Running" || status === "Completed") return;
+
+  state.timer.status = "Running";
+  renderTimer();
+
+  state.timer.intervalId = setInterval(function () {
+    if (state.timer.remainingSeconds <= 0) {
+      completeTimer();
+      return;
+    }
+    state.timer.remainingSeconds -= 1;
+    if (state.timer.remainingSeconds === 0) {
+      completeTimer();
+    } else {
+      renderTimer();
+    }
+  }, 1000);
+}
+
+/**
+ * stopTimer() — pauses the running timer.
+ *
+ * Clears the countdown interval and transitions status to "Paused".
+ *
+ * Requirements: 4.2
+ */
+function stopTimer() {
+  if (state.timer.intervalId !== null) {
+    clearInterval(state.timer.intervalId);
+    state.timer.intervalId = null;
+  }
+  state.timer.status = "Paused";
+  renderTimer();
+}
+
+/**
+ * resetTimer() — returns the timer to its initial Idle state.
+ *
+ * Clears any active interval, restores remainingSeconds to TIMER_DURATION
+ * (1500 s = 25:00), and sets status back to "Idle".
+ * Safe to call from any status (including Idle — effectively a no-op).
+ *
+ * Requirements: 3.4, 3.5, 4.4, 4.8
+ */
+function resetTimer() {
+  if (state.timer.intervalId !== null) {
+    clearInterval(state.timer.intervalId);
+    state.timer.intervalId = null;
+  }
+  state.timer.remainingSeconds = TIMER_DURATION;
+  state.timer.status = "Idle";
+  renderTimer();
+}
+
+/**
+ * completeTimer() — called when the countdown reaches 0.
+ *
+ * Clears the interval, sets status to "Completed", re-renders the timer
+ * (which will show "00:00" and disable Start + Stop), then emits an
+ * audible alert of at least 1 second using the Web Audio API.
+ * Falls back gracefully if AudioContext is unavailable.
+ *
+ * Requirements: 3.4, 4.8
+ */
+function completeTimer() {
+  if (state.timer.intervalId !== null) {
+    clearInterval(state.timer.intervalId);
+    state.timer.intervalId = null;
+  }
+  state.timer.remainingSeconds = 0;
+  state.timer.status = "Completed";
+  renderTimer();
+
+  // Audible alert — synthesize a 1-second beep via Web Audio API
+  try {
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) throw new Error("AudioContext not available");
+
+    var ctx        = new AudioCtx();
+    var oscillator = ctx.createOscillator();
+    var gainNode   = ctx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    // 880 Hz sine wave (A5 note) — clearly audible alert tone
+    oscillator.type      = "sine";
+    oscillator.frequency.setValueAtTime(880, ctx.currentTime);
+
+    // Ramp volume down over the last 0.1 s to avoid a click artefact
+    gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.0);
+
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + 1.0);   // 1 second duration
+
+    // Close the context after the beep finishes to free resources
+    oscillator.onended = function () {
+      ctx.close();
+    };
+  } catch (e) {
+    // AudioContext unavailable (e.g. automated test environment) — fail silently
+    console.warn("Timer beep unavailable:", e.message);
+  }
+}
+
+/**
+ * initTimer() — binds button event listeners and renders the initial state.
+ *
+ * Wires:
+ *   #btn-start  → startTimer
+ *   #btn-stop   → stopTimer
+ *   #btn-reset  → resetTimer
+ *
+ * Calls renderTimer() so the display shows "25:00" and the correct
+ * button disabled states are applied before the user interacts.
+ *
+ * Requirements: 3.1, 4.1
+ */
+function initTimer() {
+  var btnStart = document.getElementById("btn-start");
+  var btnStop  = document.getElementById("btn-stop");
+  var btnReset = document.getElementById("btn-reset");
+
+  if (btnStart) btnStart.addEventListener("click", startTimer);
+  if (btnStop)  btnStop.addEventListener("click",  stopTimer);
+  if (btnReset) btnReset.addEventListener("click",  resetTimer);
+
+  renderTimer();
+}
+
+/* =============================================================
+   SECTION 7 — TODO LIST WIDGET
+   ============================================================= */
+
+/**
+ * editingTaskId — tracks which task (by id) is currently in inline-edit mode.
+ * null means no task is being edited.
+ */
+var editingTaskId = null;
+
+/* ── Error helpers ─────────────────────────────────────────── */
+
+/**
+ * showError(elementId, message) — displays an inline error message.
+ *
+ * Gets the element by ID, sets its textContent to message and makes
+ * it visible by setting style.display to "block".
+ *
+ * Requirements: 5.5, 5.6, 6.6, 6.7, 7.5, 8.5
+ *
+ * @param {string} elementId
+ * @param {string} message
+ */
+function showError(elementId, message) {
+  var el = document.getElementById(elementId);
+  if (el) {
+    el.textContent = message;
+    el.style.display = "block";
+  }
+}
+
+/**
+ * clearError(elementId) — hides and clears an inline error message.
+ *
+ * Requirements: 5.5, 5.6, 6.6, 6.7, 7.5, 8.5
+ *
+ * @param {string} elementId
+ */
+function clearError(elementId) {
+  var el = document.getElementById(elementId);
+  if (el) {
+    el.textContent = "";
+    el.style.display = "none";
+  }
+}
+
+/* ── Render ────────────────────────────────────────────────── */
+
+/**
+ * renderTodoList() — replaces #todo-list innerHTML with the current
+ * state.tasks array.
+ *
+ * Each task renders as:
+ *   <li class="task-item [completed]" data-task-id="…">
+ *     <input type="checkbox" class="task-checkbox" …>
+ *     <span class="task-text">…</span>   ← normal view
+ *       OR
+ *     <input class="task-edit-input" …>  ← edit view (when editingTaskId matches)
+ *     <button class="btn-edit">Edit</button>
+ *     <button class="btn-delete">Delete</button>
+ *     <p class="error task-error" id="task-error-{id}"></p>
+ *   </li>
+ *
+ * When a task is in edit mode the text span is replaced with an <input>
+ * pre-populated with the current title, and the Edit button is replaced
+ * with Save + Cancel buttons.
+ *
+ * Requirements: 5.3, 7.2, 7.3, 9.2
+ */
+function renderTodoList() {
+  var listEl = document.getElementById("todo-list");
+  if (!listEl) return;
+
+  if (state.tasks.length === 0) {
+    listEl.innerHTML = "";
+    return;
+  }
+
+  var html = "";
+  for (var i = 0; i < state.tasks.length; i++) {
+    var task = state.tasks[i];
+    var liClass = "task-item" + (task.completed ? " completed" : "");
+    var isEditing = (editingTaskId === task.id);
+
+    // Checkbox — checked reflects completion state
+    var checkboxHtml = '<input type="checkbox" class="task-checkbox"' +
+      (task.completed ? " checked" : "") +
+      ' aria-label="Mark task complete">';
+
+    var contentHtml;
+    var actionHtml;
+
+    if (isEditing) {
+      // Edit mode: replace text span with an input field
+      var escapedTitle = task.title
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      contentHtml = '<input type="text" class="task-edit-input"' +
+        ' data-task-id="' + task.id + '"' +
+        ' value="' + escapedTitle + '"' +
+        ' maxlength="' + MAX_TASK_LENGTH + '"' +
+        ' aria-label="Edit task text">';
+
+      actionHtml =
+        '<button class="btn-save" aria-label="Save task">Save</button>' +
+        '<button class="btn-cancel" aria-label="Cancel edit">Cancel</button>';
+    } else {
+      // Normal view: show task text as a span
+      var escapedText = task.title
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      contentHtml = '<span class="task-text">' + escapedText + '</span>';
+
+      actionHtml =
+        '<button class="btn-edit" aria-label="Edit task">Edit</button>' +
+        '<button class="btn-delete" aria-label="Delete task">Delete</button>';
+    }
+
+    html +=
+      '<li class="' + liClass + '" data-task-id="' + task.id + '">' +
+        checkboxHtml +
+        contentHtml +
+        actionHtml +
+        '<p class="error task-error" id="task-error-' + task.id + '" style="display:none;"></p>' +
+      '</li>';
+  }
+
+  listEl.innerHTML = html;
+}
+
+/* ── Action functions ──────────────────────────────────────── */
+
+/**
+ * addTask(text) — creates a new Task and appends it to state.tasks.
+ *
+ * Validates input; shows inline error on failure.
+ * On success: trims text, generates id, pushes to state, persists,
+ * clears the input field, and re-renders.
+ *
+ * Requirements: 5.2, 5.3, 5.4, 5.5, 5.6
+ *
+ * @param {string} text - Raw value from the input field
+ */
+function addTask(text) {
+  if (!isValidTaskInput(text)) {
+    showError("todo-input-error", "Please enter a task.");
+    var inputEl = document.getElementById("todo-input");
+    if (inputEl) inputEl.focus();
+    return;
+  }
+
+  clearError("todo-input-error");
+
+  var task = {
+    id:        String(Date.now() + Math.random()),
+    title:     text.trim(),
+    completed: false
+  };
+
+  state.tasks.push(task);
+
+  // Clear the input field immediately
+  var inputField = document.getElementById("todo-input");
+  if (inputField) inputField.value = "";
+
+  // Persist; keep task in state even if storage fails
+  try {
+    saveTasks(state.tasks);
+  } catch (e) {
+    showError("todo-input-error", "Task could not be saved.");
+  }
+
+  renderTodoList();
+}
+
+/**
+ * startEditTask(id) — enters inline-edit mode for the given task.
+ *
+ * Sets editingTaskId and re-renders so the task row shows an input field.
+ *
+ * Requirements: 6.1, 6.2
+ *
+ * @param {string} id
+ */
+function startEditTask(id) {
+  editingTaskId = id;
+  renderTodoList();
+
+  // Focus the edit input after render
+  var editInput = document.querySelector(".task-edit-input[data-task-id='" + id + "']");
+  if (editInput) {
+    editInput.focus();
+    // Move cursor to end of existing text
+    var len = editInput.value.length;
+    editInput.setSelectionRange(len, len);
+  }
+}
+
+/**
+ * editTask(id, newText) — saves inline-edit changes for the given task.
+ *
+ * Validates new text; shows per-item inline error on failure (keeping the
+ * edit input open). On success: mutates title, clears editingTaskId,
+ * persists, and re-renders.
+ *
+ * Requirements: 6.3, 6.4, 6.5, 6.6, 6.7
+ *
+ * @param {string} id
+ * @param {string} newText - Current value from the edit input field
+ */
+function editTask(id, newText) {
+  if (!isValidTaskInput(newText)) {
+    showError("task-error-" + id, "Task text cannot be empty.");
+    var editInput = document.querySelector(".task-edit-input[data-task-id='" + id + "']");
+    if (editInput) editInput.focus();
+    return;
+  }
+
+  // Find and mutate the task
+  for (var i = 0; i < state.tasks.length; i++) {
+    if (state.tasks[i].id === id) {
+      state.tasks[i].title = newText.trim();
+      break;
+    }
+  }
+
+  editingTaskId = null;
+
+  try {
+    saveTasks(state.tasks);
+  } catch (e) {
+    // Re-render first so the task-error element exists in DOM
+    renderTodoList();
+    showError("task-error-" + id, "Change could not be saved.");
+    return;
+  }
+
+  renderTodoList();
+}
+
+/**
+ * cancelEditTask() — discards any in-progress inline edit.
+ *
+ * Clears editingTaskId and re-renders without touching state.tasks.
+ *
+ * Requirements: 6.5
+ */
+function cancelEditTask() {
+  editingTaskId = null;
+  renderTodoList();
+}
+
+/**
+ * toggleTask(id) — flips the completed status of the given task.
+ *
+ * Persists and re-renders. On storage failure shows a per-item error.
+ *
+ * Requirements: 7.1, 7.2, 7.3, 7.4, 7.5
+ *
+ * @param {string} id
+ */
+function toggleTask(id) {
+  for (var i = 0; i < state.tasks.length; i++) {
+    if (state.tasks[i].id === id) {
+      state.tasks[i].completed = !state.tasks[i].completed;
+      break;
+    }
+  }
+
+  try {
+    saveTasks(state.tasks);
+  } catch (e) {
+    renderTodoList();
+    showError("task-error-" + id, "Status could not be saved.");
+    return;
+  }
+
+  renderTodoList();
+}
+
+/**
+ * deleteTask(id) — removes a task after the user confirms the deletion.
+ *
+ * Shows window.confirm; if the user cancels, does nothing.
+ * On confirm: filters task out of state, persists, re-renders.
+ * Storage failure: shows error on #todo-input-error; task stays removed
+ * from state and UI for this session (per spec Req 8.5).
+ *
+ * Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6
+ *
+ * @param {string} id
+ */
+function deleteTask(id) {
+  var confirmed = window.confirm("Delete this task?");
+  if (!confirmed) return;
+
+  state.tasks = state.tasks.filter(function (t) { return t.id !== id; });
+
+  // If the deleted task was being edited, clear editing state
+  if (editingTaskId === id) {
+    editingTaskId = null;
+  }
+
+  try {
+    saveTasks(state.tasks);
+  } catch (e) {
+    renderTodoList();
+    showError("todo-input-error", "Deletion could not be saved.");
+    return;
+  }
+
+  renderTodoList();
+}
+
+/* ── Init ──────────────────────────────────────────────────── */
+
+/**
+ * initTodoList() — renders the initial list and wires up all event listeners.
+ *
+ * Uses event delegation on #todo-list so dynamically created task rows
+ * are handled without re-attaching listeners on every render.
+ *
+ * Delegated events on #todo-list:
+ *   click  .task-checkbox  → toggleTask(taskId)
+ *   click  .btn-edit       → startEditTask(taskId)
+ *   click  .btn-save       → editTask(taskId, inputValue)
+ *   click  .btn-cancel     → cancelEditTask()
+ *   click  .btn-delete     → deleteTask(taskId)
+ *   keydown .task-edit-input (Enter)  → editTask(taskId, inputValue)
+ *   keydown .task-edit-input (Escape) → cancelEditTask()
+ *
+ * Direct bindings:
+ *   #btn-add-task click → addTask(#todo-input value)
+ *   #todo-input keydown (Enter) → addTask(input value)
+ *
+ * Requirements: 5.1, 9.1, 9.2, 9.3
+ */
+function initTodoList() {
+  renderTodoList();
+
+  var listEl    = document.getElementById("todo-list");
+  var addBtn    = document.getElementById("btn-add-task");
+  var todoInput = document.getElementById("todo-input");
+
+  // ── Event delegation — clicks inside #todo-list ────────────
+  if (listEl) {
+    listEl.addEventListener("click", function (e) {
+      var target = e.target;
+
+      // Resolve the closest <li> to get the task id
+      var li = target.closest ? target.closest("[data-task-id]") : null;
+      if (!li) return;
+      var taskId = li.getAttribute("data-task-id");
+      if (!taskId) return;
+
+      if (target.classList.contains("task-checkbox")) {
+        toggleTask(taskId);
+
+      } else if (target.classList.contains("btn-edit")) {
+        startEditTask(taskId);
+
+      } else if (target.classList.contains("btn-save")) {
+        var editInput = li.querySelector(".task-edit-input");
+        var newText = editInput ? editInput.value : "";
+        editTask(taskId, newText);
+
+      } else if (target.classList.contains("btn-cancel")) {
+        cancelEditTask();
+
+      } else if (target.classList.contains("btn-delete")) {
+        deleteTask(taskId);
+      }
+    });
+
+    // ── Event delegation — keydown inside edit inputs ──────────
+    listEl.addEventListener("keydown", function (e) {
+      var target = e.target;
+      if (!target.classList.contains("task-edit-input")) return;
+
+      var li = target.closest ? target.closest("[data-task-id]") : null;
+      if (!li) return;
+      var taskId = li.getAttribute("data-task-id");
+      if (!taskId) return;
+
+      if (e.key === "Enter") {
+        e.preventDefault();
+        editTask(taskId, target.value);
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        cancelEditTask();
+      }
+    });
+  }
+
+  // ── Add task via button click ─────────────────────────────
+  if (addBtn) {
+    addBtn.addEventListener("click", function () {
+      var val = todoInput ? todoInput.value : "";
+      addTask(val);
+    });
+  }
+
+  // ── Add task via Enter key in input field ─────────────────
+  if (todoInput) {
+    todoInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addTask(todoInput.value);
+      }
+    });
+  }
+}

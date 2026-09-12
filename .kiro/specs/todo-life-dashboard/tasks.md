@@ -161,18 +161,18 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
   - Document that all widget mutations go through widget functions, never direct external mutation
   - _Requirements: 9.1, 13.2_
 
-- [~] 9. JS Section 5 — Greeting Widget
-  - [ ] 9.1 Implement `renderGreeting()`
+- [x] 9. JS Section 5 — Greeting Widget
+  - [x] 9.1 Implement `renderGreeting()`
     - Call `new Date()` inside a `try/catch`; on failure set `#clock-display` and `#date-display` to unavailability placeholder and `#greeting-message` to `"Good Day"`
     - On success: set `#clock-display` using `formatTime`, `#date-display` using `formatDate`, `#greeting-message` using `getGreeting`
     - _Requirements: 1.1, 1.2, 1.5, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
 
-  - [ ] 9.2 Implement `initGreeting()`
+  - [x] 9.2 Implement `initGreeting()`
     - Call `renderGreeting()` immediately, then start a `setInterval(renderGreeting, 1000)` to update once per second
     - _Requirements: 1.3, 1.4, 2.5_
 
-- [~] 10. JS Section 6 — Focus Timer Widget
-  - [ ] 10.1 Implement `renderTimer()`
+- [x] 10. JS Section 6 — Focus Timer Widget
+  - [x] 10.1 Implement `renderTimer()`
     - Update `#timer-display` using `formatTimer(state.timer.remainingSeconds)`
     - Set `disabled` on `#btn-start`, `#btn-stop`, `#btn-reset` according to the state machine invariant (Property 6)
     - _Requirements: 3.1, 3.3, 4.5, 4.6_
@@ -181,7 +181,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 6: Timer control enabled/disabled states are an invariant of timer status**
     - **Validates: Requirements 4.5, 4.6**
 
-  - [ ] 10.3 Implement `startTimer()`
+  - [x] 10.3 Implement `startTimer()`
     - Guard: if `state.timer.status` is `"Running"` or `"Completed"`, do nothing
     - Set `status = "Running"`, start `setInterval` (1000ms), store `intervalId` in state
     - Each tick: decrement `remainingSeconds`; if it reaches 0, call `completeTimer()`
@@ -191,30 +191,30 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 5: Each timer tick decrements remaining seconds by exactly one**
     - **Validates: Requirements 3.2**
 
-  - [ ] 10.5 Implement `stopTimer()`, `resetTimer()`, and `completeTimer()`
+  - [x] 10.5 Implement `stopTimer()`, `resetTimer()`, and `completeTimer()`
     - `stopTimer`: clear interval, set `status = "Paused"`, call `renderTimer()`
     - `resetTimer`: clear interval, set `remainingSeconds = TIMER_DURATION`, `status = "Idle"`, `intervalId = null`, call `renderTimer()`
     - `completeTimer`: clear interval, set `status = "Completed"`, call `renderTimer()`, then emit an audible alert using `AudioContext` (synthesize a short beep) or `new Audio()` tone lasting at least 1 second
     - _Requirements: 3.4, 3.5, 4.2, 4.4, 4.8_
 
-  - [ ] 10.6 Implement `initTimer()`
+  - [x] 10.6 Implement `initTimer()`
     - Bind `#btn-start` → `startTimer`, `#btn-stop` → `stopTimer`, `#btn-reset` → `resetTimer`
     - Call `renderTimer()` to set initial display to `"25:00"` with correct button states
     - _Requirements: 3.1, 4.1_
 
-- [~] 11. JS Section 7 — To-Do List Widget
-  - [ ] 11.1 Implement `showError(elementId, message)` and `clearError(elementId)` helpers
+- [x] 11. JS Section 7 — To-Do List Widget
+  - [x] 11.1 Implement `showError(elementId, message)` and `clearError(elementId)` helpers
     - `showError`: get element by ID, set `textContent` and `style.display = "block"`
     - `clearError`: set `textContent = ""` and `style.display = "none"`
     - _Requirements: 5.5, 5.6, 6.6, 6.7, 7.5, 8.5_
 
-  - [ ] 11.2 Implement `renderTodoList()`
+  - [x] 11.2 Implement `renderTodoList()`
     - Replace `#todo-list` `innerHTML` with one `<li class="task-item">` per entry in `state.tasks`
     - Each item includes: checkbox (`.task-checkbox`), text span (`.task-text`), edit button (`.btn-edit`), delete button (`.btn-delete`), error paragraph (`.task-error`)
     - Apply `completed` class to the `<li>` when `task.completed === true`
     - _Requirements: 5.3, 7.2, 7.3, 9.2_
 
-  - [ ] 11.3 Implement `addTask(text)`
+  - [x] 11.3 Implement `addTask(text)`
     - Validate with `isValidTaskInput`; on failure call `showError("todo-input-error", …)` and return
     - Create Task object: `{ id: String(Date.now() + Math.random()), title: text.trim(), completed: false }`
     - Push to `state.tasks`, clear input field, call `saveTasks` inside `try/catch` (on error show error message but keep task in state), call `renderTodoList()`
@@ -224,13 +224,13 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 7: Task creation produces a task with trimmed title and incomplete status**
     - **Validates: Requirements 5.2**
 
-  - [ ] 11.5 Implement `editTask(id, newText)` with inline editing flow
+  - [x] 11.5 Implement `editTask(id, newText)` with inline editing flow
     - `renderTodoList` renders an editable `<input>` pre-populated with current title when task is in edit mode (track edit state via a module-level variable or a data attribute)
     - On Save/Enter: validate with `isValidTaskInput`; on failure show inline error; on success mutate `task.title`, call `saveTasks` (on error show per-item error), call `renderTodoList()`
     - On Cancel/Escape: discard changes, call `renderTodoList()` without mutating state
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7_
 
-  - [ ] 11.6 Implement `toggleTask(id)`
+  - [x] 11.6 Implement `toggleTask(id)`
     - Find task by `id`, flip `task.completed`, call `saveTasks` inside `try/catch` (on error show per-item error), call `renderTodoList()`
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
@@ -238,12 +238,12 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 9: Task completion toggle is an involution (round-trip)**
     - **Validates: Requirements 7.2, 7.3**
 
-  - [ ] 11.8 Implement `deleteTask(id)` with confirmation prompt
+  - [x] 11.8 Implement `deleteTask(id)` with confirmation prompt
     - Call `window.confirm("Delete this task?")`: if user cancels, do nothing
     - On confirm: remove from `state.tasks`, call `saveTasks` inside `try/catch` (on error show error, task remains removed from state), call `renderTodoList()`
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
 
-  - [ ] 11.9 Implement `initTodoList()`
+  - [x] 11.9 Implement `initTodoList()`
     - Load `state.tasks` from storage (already done in bootstrap, but render from state)
     - Set up event delegation on `#todo-list` for click events (checkbox toggle, edit, save, cancel, delete) and keydown for Enter/Escape inside edit inputs
     - Bind `#btn-add-task` click and `#todo-input` Enter keydown to `addTask`
@@ -251,7 +251,7 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - _Requirements: 5.1, 9.1, 9.2, 9.3_
 
 - [~] 12. JS Section 8 — Quick Links Widget
-  - [ ] 12.1 Implement `renderQuickLinks()`
+  - [-] 12.1 Implement `renderQuickLinks()`
     - Replace `#quicklinks-list` `innerHTML`
     - If `state.links` is empty, render `.empty-state` message
     - Otherwise render one `<li class="link-item">` per link: a button (`.link-button`) with `link.label` as text, and a delete button (`.btn-delete-link`)
@@ -261,11 +261,11 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 15: renderQuickLinks produces exactly one button per Link**
     - **Validates: Requirements 10.2**
 
-  - [ ] 12.3 Implement link button click handler for URL launching
+  - [-] 12.3 Implement link button click handler for URL launching
     - On `.link-button` click: validate URL with `isValidURL`; if invalid show inline error and do NOT open a tab; if valid call `window.open(link.url, "_blank")`
     - _Requirements: 10.3, 10.6_
 
-  - [ ] 12.4 Implement `addLink(label, url)`
+  - [-] 12.4 Implement `addLink(label, url)`
     - Validate with `isValidLinkInput`; on failure show field-specific error and return without creating a link
     - Create Link object: `{ id: String(Date.now() + Math.random()), label: label.trim(), url: url.trim() }`
     - Push to `state.links`, clear both input fields, call `saveLinks` inside `try/catch`
@@ -277,13 +277,13 @@ Build a zero-dependency, client-side SPA consisting of a single `index.html`, on
     - **Property 13: Link creation produces a link with the provided label and URL**
     - **Validates: Requirements 11.2**
 
-  - [ ] 12.6 Implement `deleteLink(id)`
+  - [-] 12.6 Implement `deleteLink(id)`
     - Remove from `state.links`, call `saveLinks` inside `try/catch`
     - On storage failure (Req 12.5): rollback — re-insert the link at its original index, show `#quicklinks-error`, call `renderQuickLinks()`
     - On success: call `renderQuickLinks()`
     - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5_
 
-  - [ ] 12.7 Implement `initQuickLinks()`
+  - [-] 12.7 Implement `initQuickLinks()`
     - Set up event delegation on `#quicklinks-list` for link button clicks and delete button clicks
     - Bind `#btn-add-link` click to `addLink` reading from `#link-label-input` and `#link-url-input`
     - Call `renderQuickLinks()`
