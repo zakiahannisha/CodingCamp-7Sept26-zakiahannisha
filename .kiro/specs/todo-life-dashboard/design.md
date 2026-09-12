@@ -594,7 +594,7 @@ function isValidURL(str) {
 
 *A property is a characteristic or behavior that should hold true across all valid executions of a system — essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
 
-### Property Reflection
+**Property Consolidation Notes**
 
 After reviewing all prework-identified properties, the following consolidations apply:
 - **2.1–2.4** (greeting per time range) can be expressed as a single comprehensive property covering all hours.
